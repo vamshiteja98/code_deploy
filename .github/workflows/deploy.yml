@@ -48,15 +48,13 @@ jobs:
           SOURCE_DIR: deploy
           DEST_DIR: /  # root of the bucket
 
-      - name: 🚀 Deploy to CodeDeploy
-        uses: webfactory/create-aws-codedeploy-deployment@v1
-        with:
-          application-name: code-deploy-apache-application
-          deployment-group: code-deploy-apache-group
-          bundle-location: angular-app.zip
-          bucket: my-apache-app
-          region: ap-south-1
-          wait-until-completed: true
+      - name: 🚀 Deploy to CodeDeploy using AWS CLI
+        run: |
+          aws deploy create-deployment \
+            --application-name code-deploy-apache-application \
+            --deployment-group-name code-deploy-apache-group \
+            --s3-location bucket=my-apache-app,key=angular-app.zip,bundleType=zip \
+            --region ap-south-1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
