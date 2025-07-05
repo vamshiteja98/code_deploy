@@ -1,9 +1,9 @@
-name: Node.js Deploy to EC2 via CodeDeploy
+name: Angular Deploy to EC2 via CodeDeploy
 
 on:
   push:
     branches:
-      - main # or your default branch
+      - main
 
 jobs:
   deploy:
@@ -20,18 +20,23 @@ jobs:
 
       - name: 📦 Install dependencies
         run: npm install
+        working-directory: code_deploy/application/my-artifact-app
+
+      - name: 🏗️ Build Angular app
+        run: npm run build -- --configuration production
+        working-directory: code_deploy/application/my-artifact-app
 
       - name: 🛠 Make scripts executable
-        run: chmod +x scripts/*.sh
+        run: chmod +x code_deploy/application/my-artifact-app/scripts/*.sh
 
       - name: 📁 Create deployment package
         run: |
           mkdir -p deploy
-          cp -r * deploy/
-          cp -r scripts deploy/
-          cp appspec.yml deploy/
+          cp -r code_deploy/application/my-artifact-app/dist deploy/dist
+          cp -r code_deploy/application/my-artifact-app/scripts deploy/
+          cp code_deploy/application/my-artifact-app/appspec.yml deploy/
           cd deploy
-          zip -r node-app.zip .
+          zip -r angular-app.zip .
 
       - name: ☁️ Upload to S3
         uses: jakejarvis/s3-sync-action@master
@@ -50,7 +55,7 @@ jobs:
           aws deploy create-deployment \
             --application-name code-deploy-apache-application \
             --deployment-group-name code-deploy-apache-group \
-            --s3-location bucket=my-apache-app,key=node-app.zip,bundleType=zip \
+            --s3-location bucket=my-apache-app,key=angular-app.zip,bundleType=zip \
             --region ap-south-1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
