@@ -1,9 +1,9 @@
-name: Angular Deploy to EC2 via CodeDeploy
+name: Node.js Deploy to EC2 via CodeDeploy
 
 on:
   push:
     branches:
-      - main  # or 'master' or your deployment branch
+      - main # or your default branch
 
 jobs:
   deploy:
@@ -21,20 +21,17 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🏗️ Build Angular app
-        run: npm run build -- --configuration production
-
       - name: 🛠 Make scripts executable
         run: chmod +x scripts/*.sh
 
       - name: 📁 Create deployment package
         run: |
           mkdir -p deploy
-          cp -r dist/your-app deploy/dist
+          cp -r * deploy/
           cp -r scripts deploy/
           cp appspec.yml deploy/
           cd deploy
-          zip -r angular-app.zip .
+          zip -r node-app.zip .
 
       - name: ☁️ Upload to S3
         uses: jakejarvis/s3-sync-action@master
@@ -46,14 +43,14 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-south-1
           SOURCE_DIR: deploy
-          DEST_DIR: /  # root of the bucket
+          DEST_DIR: /
 
       - name: 🚀 Deploy to CodeDeploy using AWS CLI
         run: |
           aws deploy create-deployment \
             --application-name code-deploy-apache-application \
             --deployment-group-name code-deploy-apache-group \
-            --s3-location bucket=my-apache-app,key=angular-app.zip,bundleType=zip \
+            --s3-location bucket=my-apache-app,key=node-app.zip,bundleType=zip \
             --region ap-south-1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
