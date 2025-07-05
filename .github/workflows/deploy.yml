@@ -41,21 +41,21 @@ jobs:
         with:
           args: --acl private --follow-symlinks
         env:
-          AWS_S3_BUCKET: your-s3-bucket-name
+          AWS_S3_BUCKET: my-apache-app
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: your-region
+          AWS_REGION: ap-south-1
           SOURCE_DIR: deploy
           DEST_DIR: /  # root of the bucket
 
       - name: 🚀 Deploy to CodeDeploy
         uses: webfactory/create-aws-codedeploy-deployment@v1
         with:
-          application-name: your-codedeploy-app
-          deployment-group: your-codedeploy-group
+          application-name: code-deploy-apache-application
+          deployment-group: code-deploy-apache-group
           bundle-location: angular-app.zip
-          bucket: your-s3-bucket-name
-          region: your-region
+          bucket: my-apache-app
+          region: ap-south-1
           wait-until-completed: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
