@@ -49,7 +49,7 @@ jobs:
           DEST_DIR: /  # root of the bucket
 
       - name: 🚀 Deploy to CodeDeploy
-        uses: webfactory/create-aws-codedeploy-deployment@v1
+        uses: webfactory/create-aws-codedeploy-deployment@v0.2.0
         with:
           application-name: code-deploy-apache-application
           deployment-group: code-deploy-apache-group
