@@ -33,7 +33,7 @@ jobs:
       - name: 📁 Create deployment package
         run: |
           mkdir -p deploy
-          cp -r dist/my-artifact-app deploy/dist
+          cp cp -r dist/* deploy/dist
           cp -r scripts deploy/
           cp appspec.yml deploy/
           cd deploy
