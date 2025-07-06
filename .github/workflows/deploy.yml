@@ -20,11 +20,11 @@ jobs:
 
       - name: 📦 Install dependencies
         run: npm install
-        working-directory: code_deploy/application/my-artifact-app
+        working-directory: application/my-artifact-app
 
       - name: 🏗️ Build Angular app
         run: npm run build -- --configuration production
-        working-directory: code_deploy/application/my-artifact-app
+        working-directory: application/my-artifact-app
 
 
       - name: 🛠 Make scripts executable
